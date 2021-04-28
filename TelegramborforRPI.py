@@ -11,7 +11,7 @@ import configparser
 import random
 from colorrgb import *
 import time
-randomColor = (random.randrange(20,255),random.randrange(20,255),random.randrange(20,255))
+random_color = (random.randrange(20,255),random.randrange(20,255),random.randrange(20,255))
 enable_pi_camera = False
 enable_sense_hat = False
 enable_logging = True
