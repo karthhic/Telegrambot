@@ -12,24 +12,25 @@ import random
 from colorrgb import *
 import time
 randomColor = (random.randrange(20,255),random.randrange(20,255),random.randrange(20,255))
-Enable_PiCamera = False
-Enable_senseHat = False
+enable_pi_camera = False
+enable_sense_hat = False
+enable_logging = True
 
-if Enable_senseHat:
+if enable_sense_hat:
     from sense_hat import SenseHat
     sense = SenseHat()
     print("SenseHat is enabled")
 else:
     print("SenseHat is disabled")
 
-if Enable_PiCamera:
+if enable_pi_camera:
     from picamera import PiCamera
     print("Pi camera is enabled")
 else:
     print("Pi camera disabled")
 
 
-def pathCheck(path):
+def path_check(path):
     if os.path.exists(path):
         print("Path exists")
     else:
@@ -119,7 +120,7 @@ class BotHandler:
         return last_update
 
 
-if Enable_PiCamera:
+if enable_pi_camera:
     camera = PiCamera()
 now = datetime.now()
 today = date.today()
@@ -127,12 +128,12 @@ parser = configparser.ConfigParser()
 parser.read('config.ini')
 token = parser.get('telegrambot', 'token')  # Token of your bot
 karkommbot = BotHandler(token)  # Your bot's name
-photolocation = parser.get('telegrambot', 'imagename')
-loggerlocation = parser.get('telegrambot', 'imagelocation')
-timeoftheday = ["Good Morning ", "Good Afternoon ", "Good Evening ", "Go sleep "]
-pathCheck("videos")
-pathCheck("photos")
-pathCheck("documents")
+photo_location = parser.get('telegrambot', 'imagename')
+logger_location = parser.get('telegrambot', 'imagelocation')
+time_of_the_day = ["Good Morning ", "Good Afternoon ", "Good Evening ", "Go sleep "]
+path_check("videos")
+path_check("photos")
+path_check("documents")
 
 def main():
     new_offset = 0
@@ -164,12 +165,13 @@ def main():
                 current_time = now.strftime("%H:%M:%S")
                 current_hour = now.strftime("%H")
                 date = today.strftime("%d/%m/%Y")
-                log_value = date + ", " + current_time + ", " + first_chat_name + ", " + str(
+                if enable_logging:
+                    log_value = date + ", " + current_time + ", " + first_chat_name + ", " + str(
                     first_chat_id) + ", " + first_chat_text
-                print(log_value)
-                logfile = open(loggerlocation, "a")
-                logfile.write(log_value + "\n")
-                logfile.close()
+                    print(log_value)
+                    logfile = open(logger_location, "a")
+                    logfile.write(log_value + "\n")
+                    logfile.close()
 
                 if 'photo' in current_update['message']:
                     photo_id = current_update['message']['photo'][2]['file_id']
@@ -194,17 +196,17 @@ def main():
                         index = 2
                     else:
                         index = 3
-                    karkommbot.send_message(first_chat_id, timeoftheday[index] + first_chat_name)
+                    karkommbot.send_message(first_chat_id, time_of_the_day[index] + first_chat_name)
                     #new_offset = first_update_id + 1
                 elif first_chat_text in ["photo", "Photo"]:
-                    if Enable_PiCamera:
+                    if enable_pi_camera:
                         karkommbot.send_message(first_chat_id, 'Wait taking photo...')
-                        karkommbot.send_photo(first_chat_id, photolocation)
+                        karkommbot.send_photo(first_chat_id, photo_location)
                     else:
                         karkommbot.send_message(first_chat_id, 'Photo option is disabled')
                     #new_offset = first_update_id + 1
                 elif first_chat_text.find("msg") != -1 or first_chat_text.find("Msg") != -1:
-                    if Enable_senseHat:
+                    if enable_sense_hat:
                         karkommbot.send_message(first_chat_id, 'Message being displayed')
                         if first_chat_text.find("msg") != -1:
                             messagedisplay(first_chat_text, 3,randomColor,"msg")
