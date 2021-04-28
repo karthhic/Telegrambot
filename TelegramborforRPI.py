@@ -127,7 +127,7 @@ today = date.today()
 parser = configparser.ConfigParser()
 parser.read('config.ini')
 token = parser.get('telegrambot', 'token')  # Token of your bot
-karkommbot = BotHandler(token)  # Your bot's name
+TelegramBot = BotHandler(token)  # Your bot's name
 photo_location = parser.get('telegrambot', 'imagename')
 logger_location = parser.get('telegrambot', 'imagelocation')
 time_of_the_day = ["Good Morning ", "Good Afternoon ", "Good Evening ", "Go sleep "]
@@ -140,7 +140,7 @@ def main():
     print('hi, now launching...')
 
     while True:
-        all_updates = karkommbot.get_updates(new_offset)
+        all_updates = TelegramBot.get_updates(new_offset)
         if len(all_updates) > 0:
             for current_update in all_updates:
                 print("-----------------")
@@ -175,16 +175,16 @@ def main():
 
                 if 'photo' in current_update['message']:
                     photo_id = current_update['message']['photo'][2]['file_id']
-                    karkommbot.save_image(photo_id)
-                    karkommbot.send_message(first_chat_id, 'Photo saved successfully')
+                    TelegramBot.save_image(photo_id)
+                    TelegramBot.send_message(first_chat_id, 'Photo saved successfully')
                 if 'video' in current_update['message']:
                     video_id = current_update['message']['video']['file_id']
-                    karkommbot.save_video(photo_id)
-                    karkommbot.send_message(first_chat_id, 'Video saved successfully')
+                    TelegramBot.save_video(photo_id)
+                    TelegramBot.send_message(first_chat_id, 'Video saved successfully')
                 if 'document' in current_update['message']:
                     document_id = current_update['message']['document']['file_id']
-                    karkommbot.save_document(photo_id)
-                    karkommbot.send_message(first_chat_id, 'Video saved successfully')
+                    TelegramBot.save_document(photo_id)
+                    TelegramBot.send_message(first_chat_id, 'Video saved successfully')
 
                 if first_chat_text in ('Hi',"hi"):
                     print(current_hour)
@@ -196,30 +196,30 @@ def main():
                         index = 2
                     else:
                         index = 3
-                    karkommbot.send_message(first_chat_id, time_of_the_day[index] + first_chat_name)
+                    TelegramBot.send_message(first_chat_id, time_of_the_day[index] + first_chat_name)
                     #new_offset = first_update_id + 1
                 elif first_chat_text in ["photo", "Photo"]:
                     if enable_pi_camera:
-                        karkommbot.send_message(first_chat_id, 'Wait taking photo...')
-                        karkommbot.send_photo(first_chat_id, photo_location)
+                        TelegramBot.send_message(first_chat_id, 'Wait taking photo...')
+                        TelegramBot.send_photo(first_chat_id, photo_location)
                     else:
-                        karkommbot.send_message(first_chat_id, 'Photo option is disabled')
+                        TelegramBot.send_message(first_chat_id, 'Photo option is disabled')
                     #new_offset = first_update_id + 1
                 elif first_chat_text.find("msg") != -1 or first_chat_text.find("Msg") != -1:
                     if enable_sense_hat:
-                        karkommbot.send_message(first_chat_id, 'Message being displayed')
+                        TelegramBot.send_message(first_chat_id, 'Message being displayed')
                         if first_chat_text.find("msg") != -1:
                             messagedisplay(first_chat_text, 3,randomColor,"msg")
                         else:
                             messagedisplay(first_chat_text, 3,randomColor,"Msg")
                     else:
-                        karkommbot.send_message(first_chat_id, 'Sensehat Diabled')
+                        TelegramBot.send_message(first_chat_id, 'Sensehat Diabled')
                     #new_offset = first_update_id + 1
                 elif first_chat_text in ["myid", "Myid"]:
-                    karkommbot.send_message(first_chat_id, 'Your chat id is: ' + str(first_chat_id))
+                    TelegramBot.send_message(first_chat_id, 'Your chat id is: ' + str(first_chat_id))
                     #new_offset = first_update_id + 1
                 else:
-                    karkommbot.send_message(first_chat_id,'use commands like myid, photo. you can also send photos and videos ' + first_chat_name)
+                    TelegramBot.send_message(first_chat_id,'use commands like myid, photo. you can also send photos and videos ' + first_chat_name)
                     #new_offset = first_update_id + 1
                 new_offset = first_update_id + 1
 
